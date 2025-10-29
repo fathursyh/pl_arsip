@@ -5,4 +5,6 @@
 @section('dashboard-desc', 'Lihat dan kelola seluruh data peminjaman')
 @section('main')
     <p>Hal peminjaman</p>
+    {{-- daftar permohonan peminjaman --}}
+    {{-- buat detail pemohonan peminjaman, nanti bisa acc atau tolak --}}
 @endsection

@@ -1,21 +1,51 @@
 @php
-    $SIDEBAR_MENU = [
-        [
-            'name' => 'Dashboard',
-            'link' => 'admin.home',
-            'icon' => 'home',
+    $SIDEBAR_MENU = match (
+        auth()
+            ->user()
+            ->hasAnyRole(['admin'])
+    ) {
+        true => [
+            [
+                'name' => 'Dashboard',
+                'link' => 'admin.home',
+                'icon' => 'home',
+            ],
+            [
+                'name' => 'Arsip',
+                'link' => 'admin.arsip',
+                'icon' => 'arsip',
+            ],
+            [
+                'name' => 'Peminjaman',
+                'link' => 'admin.peminjaman',
+                'icon' => 'pinjam',
+            ],
+            [
+                'name' => 'Users',
+                'link' => 'admin.users',
+                'icon' => 'users',
+            ],
+            //reports
+            // users
         ],
-        [
-            'name' => 'Arsip',
-            'link' => 'admin.arsip',
-            'icon' => 'arsip',
+        false => [
+            [
+                'name' => 'Dashboard',
+                'link' => 'user.home',
+                'icon' => 'home',
+            ],
+            [
+                'name' => 'Arsip',
+                'link' => 'user.arsip',
+                'icon' => 'arsip',
+            ],
+                   [
+                'name' => 'Peminjaman',
+                'link' => 'user.peminjaman',
+                'icon' => 'pinjam',
+            ],
         ],
-        [
-            'name' => 'Peminjaman',
-            'link' => 'admin.peminjaman',
-            'icon' => 'pinjam',
-        ],
-    ];
+    };
 @endphp
 <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button"
     class="ms-3 mt-2 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:hidden dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
@@ -28,7 +58,7 @@
 </button>
 
 <aside id="logo-sidebar"
-    class="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full transition-transform sm:translate-x-0 bg-gray-50 pt-6"
+    class="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full bg-gray-50 pt-6 transition-transform sm:translate-x-0"
     aria-label="Sidebar">
     <div class="h-full overflow-y-auto px-3 py-4">
         <a href="/" class="mb-5 flex items-center ps-2.5">
@@ -51,9 +81,8 @@
                 <form action="{{ route('auth.logout') }}" method="POST" class="w-full">
                     @method('POST')
                     @csrf
-                    <button
-                        type="submit"
-                        class="group w-full cursor-pointer flex items-center rounded-lg p-2 text-red-600 transition duration-75 hover:bg-gray-100">
+                    <button type="submit"
+                        class="group flex w-full cursor-pointer items-center rounded-lg p-2 text-red-600 transition duration-75 hover:bg-gray-100">
                         <svg class="h-6 w-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                             height="24" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd"

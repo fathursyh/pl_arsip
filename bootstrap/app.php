@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => CheckRole::class,
         ]);
+        $middleware->redirectUsersTo(function() {
+            return auth()->user()->hasAnyRole(['admin']) ? route('admin.home') : route('user.home');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

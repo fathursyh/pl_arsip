@@ -5,4 +5,6 @@
 @section('dashboard-desc', 'Lihat dan kelola seluruh data arsip')
 @section('main')
     <p>Hal arsip</p>
+    {{-- halaman kelola arsip, bikin data arsip baru, edit, apus --}}
+    {{-- detail arsip juga --}}
 @endsection

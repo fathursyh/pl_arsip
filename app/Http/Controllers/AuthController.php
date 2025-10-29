@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     // login
+    public function loginPage() {
+        return view('auth.login');
+    }
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -24,12 +27,12 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             return match (auth()->user()->role) {
-                'admin' => redirect()->intended('/admin')
+                'admin' => redirect()->intended(route('admin.home'))
                     ->with([
                         'alert' => 'Anda berhasil masuk akun!',
                         'type' => AlertEnum::SUCCESS->value,
                     ]),
-                'user' => redirect()->intended('/user')
+                'user' => redirect()->intended(route('user.home'))
                     ->with([
                         'alert' => 'Anda berhasil masuk akun!',
                         'type' => AlertEnum::SUCCESS->value,
