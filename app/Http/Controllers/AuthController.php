@@ -8,10 +8,17 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    // login
+    /* ---------- VIEWS ------------ */
     public function loginPage() {
         return view('auth.login');
     }
+
+    public function registerPage() {
+        return;
+    }
+
+    /* ---------- LOGIC ------------ */
+    //* login
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -47,7 +54,7 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    // logout
+    //* logout
     public function logout(Request $request)
     {
         Auth::logout();

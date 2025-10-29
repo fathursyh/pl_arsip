@@ -21,6 +21,11 @@
                 'icon' => 'pinjam',
             ],
             [
+                'name' => 'Riwayat',
+                'link' => 'admin.riwayat',
+                'icon' => 'riwayat',
+            ],
+            [
                 'name' => 'Users',
                 'link' => 'admin.users',
                 'icon' => 'users',

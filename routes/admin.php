@@ -16,6 +16,9 @@ Route::middleware([
         Route::get('/peminjaman', function () {
             return view('admin.peminjaman');
         })->name('admin.peminjaman');
+        Route::get('/riwayat', function () {
+            return view('admin.riwayat');
+        })->name('admin.riwayat');
         Route::get('/users', function () {
             return view('admin.users');
         })->name('admin.users');
