@@ -12,7 +12,12 @@ Route::middleware([
         Route::get('/home', function () {
             return view('admin.home');
         })->name('admin.home');
-        Route::get('/arsip', [ArsipController::class, 'index'])->name('admin.arsip');
+        Route::resource('/arsip', ArsipController::class)->except(['create', 'edit'])->names([
+            'index' => 'admin.arsip',
+            'store' => 'admin.arsip.store',
+            'update' => 'admin.arsip.update',
+            'destroy' => 'admin.arsip.delete'
+        ]);
         Route::get('/peminjaman', function () {
             return view('admin.peminjaman');
         })->name('admin.peminjaman');

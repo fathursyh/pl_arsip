@@ -20,7 +20,6 @@ class ArsipSeeder extends Seeder
             Arsip::create([
                 'title' => $faker->sentence(3),
                 'description' => $faker->paragraph(2),
-                'path' => $faker->filePath(),
             ]);
         }
     }

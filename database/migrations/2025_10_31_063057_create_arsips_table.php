@@ -14,7 +14,8 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('title');
             $table->string('description');
-            $table->text('path');
+            $table->text('path')->nullable();
+            $table->string('original_name')->nullable();
             $table->timestamps();
         });
     }

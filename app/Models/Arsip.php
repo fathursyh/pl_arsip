@@ -14,6 +14,7 @@ class Arsip extends Model
         'title',
         'description',
         'path',
+        'original_name',
     ];
 
     public $incrementing = false;

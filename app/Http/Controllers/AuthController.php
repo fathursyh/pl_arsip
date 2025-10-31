@@ -21,7 +21,7 @@ class AuthController extends Controller
     //* login
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             "email" => "required|string|email|max:100",
             "password" => "required|string:max:100",
             'remember' => 'sometimes|boolean'
@@ -30,6 +30,8 @@ class AuthController extends Controller
             'email.email' => 'Format email tidak valid.',
             'password.required' => 'Password tidak boleh kosong.'
         ]);
+
+        $credentials = $request->only('email','password');
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();

@@ -4,23 +4,32 @@
 @section('dashboard-title', 'Arsip')
 @section('dashboard-desc', 'Lihat dan kelola seluruh data arsip')
 @section('main')
+    <x-delete-modal />
     <section class="max-w-7xl">
         <!-- Search + Create Button -->
-        <div class="mb-4 flex items-center justify-between">
-            <div class="w-1/3">
-                <input type="text" id="search" placeholder="Cari arsip..."
-                    class="w-full rounded-lg border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500" />
+        <div class="mb-4 flex items-center justify-between gap-4">
+            <div class="flex-1">
+                <form class="max-w-md" method="GET">
+                    <label for="default-search" class="sr-only mb-2 text-sm font-medium text-gray-900">Search</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+                            <svg class="h-4 w-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </div>
+                        <input type="search" id="default-search" name="search"
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                            placeholder="Cari berdasarkan judul" value="{{ request()->query('search') }}" />
+                        <button type="submit"
+                            class="absolute bottom-2.5 end-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Cari</button>
+                    </div>
+                </form>
+
             </div>
 
-            <a href="#"
-                class="flex gap-2 items-center rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700">
-                <svg class="h-6 w-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M5 12h14m-7 7V5" />
-                </svg>
-                <span>Tambah</span>
-            </a>
+            @include('admin.arsip.create-modal')
         </div>
 
         <!-- Classic Table with Full Borders -->
@@ -28,7 +37,7 @@
             <table class="w-full border border-gray-300 text-left text-sm text-gray-700">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th class="border border-gray-300 py-2 text-center px-2">No</th>
+                        <th class="border border-gray-300 px-2 py-2 text-center">No</th>
                         <th class="border border-gray-300 px-4 py-2">Judul</th>
                         <th class="border border-gray-300 px-4 py-2">Deskripsi</th>
                         <th class="border border-gray-300 px-4 py-2">Diupload</th>
@@ -38,32 +47,55 @@
 
                 <tbody>
                     @foreach ($arsips as $arsip)
-                    <tr>
-                        <td class="border border-gray-300 px-2 py-2 text-center"> {{ ($arsips->currentPage() - 1) * $arsips->perPage() + $loop->iteration }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ $arsip->title }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ $arsip->description }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ date('d/m/Y', $arsip->createdAt) }}</td>
-                        <td class="border border-gray-300 py-2 text-center px-2">
+                        @include('admin.arsip.edit-modal', ['arsip' => $arsip])
 
-                            <div class="flex justify-center gap-3">
-                                <button class="rounded-full bg-blue-100 hover:bg-blue-200 p-2 text-blue-600 hover:text-blue-800"
-                                    title="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M16.862 3.487l3.651 3.651a1.5 1.5 0 010 2.121l-9.546 9.546a4.5 4.5 0 01-1.897 1.125l-3.273.936a.75.75 0 01-.927-.927l.936-3.273a4.5 4.5 0 011.125-1.897l9.546-9.546a1.5 1.5 0 012.121 0z" />
+                        <tr class="hover:bg-gray-100">
+                            <td class="border border-gray-300 px-2 py-2">
+                                {{ ($arsips->currentPage() - 1) * $arsips->perPage() + $loop->iteration }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ $arsip->title }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ $arsip->description }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ date('d/m/Y', $arsip->createdAt) }}</td>
+                            <td class="border border-gray-300 px-2 py-2">
+                                <button id="action" data-dropdown-toggle="action-{{ $loop->iteration }}"
+                                    class="flex w-full items-center justify-center rounded-lg p-0.5 text-center text-sm font-medium text-gray-500 hover:text-gray-800 focus:outline-none"
+                                    type="button">
+                                    <svg class="h-5 w-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                     </svg>
                                 </button>
-                                <button class="text-red-600 bg-red-100 hover:bg-red-200 p-2 rounded-full hover:text-red-800" title="Hapus">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084A2.25 2.25 0 015.84 19.673L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .563c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.02-2.09 2.201v.916" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                                <div id="action-{{ $loop->iteration }}"
+                                    class="z-10 hidden w-44 divide-y divide-gray-100 rounded bg-white shadow">
+                                    <ul class="py-1 text-sm text-gray-700" aria-labelledby="action">
+                                        <li>
+                                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Download</a>
+                                        </li>
+                                        <li>
+                                            <button class="block px-4 py-2 hover:bg-gray-100 w-full text-left"
+                                                data-modal-target="editModal-{{ $arsip->id }}"
+                                                data-modal-toggle="editModal-{{ $arsip->id }}">
+                                                Edit
+                                            </button>
+                                        </li>
+                                    </ul>
+                                    <div class="py-1 text-red-600">
+                                        <form id="delete-arsip" action="{{ route('admin.arsip.delete', $arsip) }}"
+                                            method="post" class="w-full">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                                                type="button" data-modal-target="deleteModal"
+                                                data-modal-toggle="deleteModal"
+                                                data-delete-target="{{ route('admin.arsip.delete', $arsip->id) }}"
+                                                data-name-target="{{ $arsip->title }}">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -71,7 +103,7 @@
 
         <!-- Pagination -->
         <div class="mt-4">
-                {{  $arsips->links('vendor.pagination.tailwind')}}
+            {{ $arsips->links('vendor.pagination.tailwind') }}
         </div>
     </section>
 @endsection
