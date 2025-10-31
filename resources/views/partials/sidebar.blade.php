@@ -68,7 +68,7 @@
     <div class="h-full overflow-y-auto px-3 py-4">
         <a href="/" class="mb-5 flex items-center ps-2.5">
             <img src="https://flowbite.com/docs/images/logo.svg" class="me-3 h-6 sm:h-7" alt="Flowbite Logo" />
-            <span class="self-center whitespace-nowrap text-xl font-semibold">Semangat Laili</span>
+            <span class="self-center whitespace-nowrap text-xl font-semibold">Arsip Laili</span>
         </a>
         <ul class="space-y-2 font-medium">
             @foreach ($SIDEBAR_MENU as $menu)

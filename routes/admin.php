@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ArsipController;
+
 Route::middleware([
     'web',
     'auth',
@@ -10,9 +12,7 @@ Route::middleware([
         Route::get('/home', function () {
             return view('admin.home');
         })->name('admin.home');
-        Route::get('/arsip', function () {
-            return view('admin.arsip');
-        })->name('admin.arsip');
+        Route::get('/arsip', [ArsipController::class, 'index'])->name('admin.arsip');
         Route::get('/peminjaman', function () {
             return view('admin.peminjaman');
         })->name('admin.peminjaman');

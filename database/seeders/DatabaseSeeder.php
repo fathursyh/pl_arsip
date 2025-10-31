@@ -26,5 +26,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'user@admin.com',
             'role' => RoleEnum::USER,
         ]);
+          $this->call([
+            ArsipSeeder::class
+        ]);
     }
 }

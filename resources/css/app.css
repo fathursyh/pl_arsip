@@ -23,3 +23,7 @@
     --color-primary-800: #1e40af;
     --color-primary-900: #1e3a8a;
 }
+
+button {
+    cursor: pointer;
+}
