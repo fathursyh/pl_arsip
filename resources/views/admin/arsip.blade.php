@@ -68,11 +68,14 @@
                                 <div id="action-{{ $loop->iteration }}"
                                     class="z-10 hidden w-44 divide-y divide-gray-100 rounded bg-white shadow">
                                     <ul class="py-1 text-sm text-gray-700" aria-labelledby="action">
+                                        @if ($arsip->path)
+                                            <li>
+                                                <a href="{{ route('download.arsip', $arsip->path) }}"
+                                                    class="block px-4 py-2 hover:bg-gray-100">Download</a>
+                                            </li>
+                                        @endif
                                         <li>
-                                            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Download</a>
-                                        </li>
-                                        <li>
-                                            <button class="block px-4 py-2 hover:bg-gray-100 w-full text-left"
+                                            <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                                 data-modal-target="editModal-{{ $arsip->id }}"
                                                 data-modal-toggle="editModal-{{ $arsip->id }}">
                                                 Edit
