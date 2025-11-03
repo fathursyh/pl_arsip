@@ -58,7 +58,7 @@
                     <!-- File -->
                     <div class="sm:col-span-2">
                         <label for="path" class="mb-2 block text-sm font-medium text-gray-900">Upload File</label>
-                        <input type="file" name="path" id="path"
+                        <input type="file" name="path" id="path" accept=".pdf,.docx,.doc"
                             class="focus:border-primary-600 focus:ring-primary-600 block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900">
                     </div>
 
