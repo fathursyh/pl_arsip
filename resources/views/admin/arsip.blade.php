@@ -29,82 +29,88 @@
             </div>
             @include('admin.arsip.create-modal')
         </div>
-
-        <!-- Classic Table with Full Borders -->
-        <div class="relative overflow-x-auto rounded-lg bg-white shadow">
-            <table class="w-full border border-gray-300 text-left text-sm text-gray-700">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="border border-gray-300 px-2 py-2 text-center">No</th>
-                        <th class="border border-gray-300 px-4 py-2">Judul</th>
-                        <th class="border border-gray-300 px-4 py-2">Deskripsi</th>
-                        <th class="border border-gray-300 px-4 py-2">Diupload</th>
-                        <th class="border border-gray-300 px-4 py-2 text-center">Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach ($arsips as $arsip)
-                        @include('admin.arsip.edit-modal', ['arsip' => $arsip])
-
-                        <tr class="hover:bg-gray-100">
-                            <td class="border border-gray-300 px-2 py-2">
-                                {{ ($arsips->currentPage() - 1) * $arsips->perPage() + $loop->iteration }}</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ $arsip->title }}</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ $arsip->description }}</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ date('d/m/Y', $arsip->createdAt) }}</td>
-                            <td class="border border-gray-300 px-2 py-2">
-                                <button id="action" data-dropdown-toggle="action-{{ $loop->iteration }}"
-                                    class="flex w-full items-center justify-center rounded-lg p-0.5 text-center text-sm font-medium text-gray-500 hover:text-gray-800 focus:outline-none"
-                                    type="button">
-                                    <svg class="h-5 w-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                                    </svg>
-                                </button>
-                                <div id="action-{{ $loop->iteration }}"
-                                    class="z-10 hidden w-44 divide-y divide-gray-100 rounded bg-white shadow">
-                                    <ul class="py-1 text-sm text-gray-700" aria-labelledby="action">
-                                        @if ($arsip->path)
-                                            <li>
-                                                <a href="{{ route('download.arsip', $arsip->path) }}"
-                                                    class="block px-4 py-2 hover:bg-gray-100">Download</a>
-                                            </li>
-                                        @endif
-                                        <li>
-                                            <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                                                data-modal-target="editModal-{{ $arsip->id }}"
-                                                data-modal-toggle="editModal-{{ $arsip->id }}">
-                                                Edit
-                                            </button>
-                                        </li>
-                                    </ul>
-                                    <div class="py-1 text-red-600">
-                                        <form id="delete-arsip" action="{{ route('admin.arsip.delete', $arsip) }}"
-                                            method="post" class="w-full">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                                                type="button" data-modal-target="deleteModal"
-                                                data-modal-toggle="deleteModal"
-                                                data-delete-target="{{ route('admin.arsip.delete', $arsip->id) }}"
-                                                data-name-target="{{ $arsip->title }}">
-                                                Hapus
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </td>
+        @if (count($arsips) > 0)
+            <div class="relative min-h-[50vh] overflow-x-auto rounded-lg pb-32">
+                <table class="w-full border border-gray-300 text-left text-sm text-gray-700">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="border border-gray-300 px-2 py-2 text-center">No</th>
+                            <th class="border border-gray-300 px-4 py-2">Judul</th>
+                            <th class="border border-gray-300 px-4 py-2">Deskripsi</th>
+                            <th class="border border-gray-300 px-4 py-2">Dibuat</th>
+                            <th class="border border-gray-300 px-4 py-2 text-center">Status</th>
+                            <th class="border border-gray-300 px-4 py-2 text-center">Action</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                    </thead>
 
-        <!-- Pagination -->
-        <div class="mt-4">
-            {{ $arsips->links('vendor.pagination.tailwind') }}
-        </div>
+                    <tbody>
+                        @foreach ($arsips as $arsip)
+                            @include('admin.arsip.edit-modal', ['arsip' => $arsip])
+
+                            <tr class="hover:bg-gray-100">
+                                <td class="border border-gray-300 px-2 py-2 text-center">
+                                    {{ ($arsips->currentPage() - 1) * $arsips->perPage() + $loop->iteration }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $arsip->title }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $arsip->description }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ date('d/m/Y', $arsip->createdAt) }}</td>
+                                <td class="border border-gray-300 px-4 py-2 capitalize text-center">
+                                    @if ($arsip->status === 'available')
+                                        <span
+                                            class="rounded-sm bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Tersedia</span>
+                                    @else
+                                        <span
+                                            class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-sm">Dipinjam</span>
+                                    @endif
+                                </td>
+                                <td class="border border-gray-300 px-2 py-2">
+                                    <button id="action" data-dropdown-toggle="action-{{ $loop->iteration }}"
+                                        class="flex w-full items-center justify-center rounded-lg p-0.5 text-center text-sm font-medium text-gray-500 hover:text-gray-800 focus:outline-none"
+                                        type="button">
+                                        <svg class="h-5 w-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                        </svg>
+                                    </button>
+                                    <div id="action-{{ $loop->iteration }}"
+                                        class="z-10 hidden w-44 divide-y divide-gray-100 rounded bg-white shadow">
+                                        <ul class="py-1 text-sm text-gray-700" aria-labelledby="action">
+                                            <li>
+                                                <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                                                    data-modal-target="editModal-{{ $arsip->id }}"
+                                                    data-modal-toggle="editModal-{{ $arsip->id }}">
+                                                    Edit
+                                                </button>
+                                            </li>
+                                        </ul>
+                                        <div class="py-1 text-red-600">
+                                            <form id="delete-arsip" action="{{ route('admin.arsip.delete', $arsip) }}"
+                                                method="post" class="w-full">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                                                    type="button" data-modal-target="deleteModal"
+                                                    data-modal-toggle="deleteModal"
+                                                    data-delete-target="{{ route('admin.arsip.delete', $arsip->id) }}"
+                                                    data-name-target="{{ $arsip->title }}">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-4">
+                {{ $arsips->links('vendor.pagination.tailwind') }}
+            </div>
+        @else
+            @include('shared.no-data')
+        @endif
     </section>
 @endsection

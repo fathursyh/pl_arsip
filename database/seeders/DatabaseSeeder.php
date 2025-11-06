@@ -27,7 +27,8 @@ class DatabaseSeeder extends Seeder
             'role' => RoleEnum::USER,
         ]);
           $this->call([
-            ArsipSeeder::class
+            ArsipSeeder::class,
+            PeminjamanSeeder::class,
         ]);
     }
 }

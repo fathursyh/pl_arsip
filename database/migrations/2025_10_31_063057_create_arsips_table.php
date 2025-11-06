@@ -14,8 +14,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('title');
             $table->string('description');
-            $table->text('path')->nullable();
-            $table->string('original_name')->nullable();
+            $table->enum('status', ['available','unavailable'])->default('available');
             $table->timestamps();
         });
     }

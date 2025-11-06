@@ -9,15 +9,14 @@ use Storage;
 
 class ArsipController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request)
     {
         $search = $request->query('search', '');
+        $page = request('page', 1);
         $arsips = Cache::remember(
-            'arsip',
-            1,
+            'arsip_'. md5($search) . '_page_' . $page,
+            30,
             fn() =>
             Arsip::where('title', 'like', "%$search%")->latest()->paginate(10)
         );

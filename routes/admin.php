@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArsipController;
+use App\Http\Controllers\PeminjamanController;
 
 Route::middleware([
     'web',
@@ -19,7 +20,7 @@ Route::middleware([
             'destroy' => 'admin.arsip.delete'
         ]);
 
-        Route::get('/peminjaman', fn() => view('admin.peminjaman'))
+        Route::get('/peminjaman', [PeminjamanController::class,'index'])
         ->name('admin.peminjaman');
 
         Route::get('/riwayat', fn() => view('admin.riwayat'))
@@ -27,14 +28,5 @@ Route::middleware([
 
         Route::get('/users', fn() => view('admin.users'))
         ->name('admin.users');
-
-        Route::get('/download/{filename}', function ($filename) {
-            if (!Storage::disk('public')->exists($filename)) {
-                abort(404);
-            }
-            $path = Storage::disk('public')->path($filename);
-
-            return response()->download($path);
-        })->where('filename', '.*')->name('download.arsip');
     });
 });
