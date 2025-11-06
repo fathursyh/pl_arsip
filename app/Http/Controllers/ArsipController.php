@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AlertEnum;
 use App\Models\Arsip;
 use Cache;
 use Illuminate\Http\Request;
-use Storage;
 
 class ArsipController extends Controller
 {
@@ -15,7 +15,7 @@ class ArsipController extends Controller
         $search = $request->query('search', '');
         $page = request('page', 1);
         $arsips = Cache::remember(
-            'arsip_'. md5($search) . '_page_' . $page,
+            'arsip_' . md5($search) . '_page_' . $page,
             30,
             fn() =>
             Arsip::where('title', 'like', "%$search%")->latest()->paginate(10)
@@ -40,30 +40,26 @@ class ArsipController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'path' => 'required|file|max:20480', // 20MB limit
         ]);
 
-        // 2️⃣ Save original file name
-        $originalName = $request->file('path')->getClientOriginalName();
-
-        // 3️⃣ Store file (Laravel will generate a unique hashed name)
-        $filePath = $request->file('path')->store('arsip', 'public');
-
-        // 4️⃣ Save to database
-        $arsip = Arsip::create([
-            'title' => $validated['title'],
-            'description' => $validated['description'] ?? null,
-            'path' => $filePath,
-            'original_name' => $originalName,
-        ]);
-
-        // 5️⃣ Redirect back with success message
-        return redirect()
-            ->route('admin.arsip')
-            ->with([
-                'alert' => 'Arsip berhasil ditambahkan!',
-                'type' => 'success',
+        try {
+            Arsip::create([
+                'title' => $validated['title'],
+                'description' => $validated['description'] ?? null,
             ]);
+
+            return redirect()
+                ->route('arsip.index')
+                ->with([
+                    'alert' => 'Arsip berhasil ditambahkan!',
+                    'type' => AlertEnum::SUCCESS->value,
+                ]);
+        } catch (\Exception $e) {
+            return back()->with([
+                'alert' => 'Terjadi kesalahan dalam pendataan arsip!',
+                'type' => AlertEnum::DANGER->value,
+            ]);
+        }
     }
 
     /**
@@ -89,34 +85,16 @@ class ArsipController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'path' => 'nullable|file|max:20480',
+            'description' => 'required|string|max:255',
         ]);
-
-        // If user uploads a new file, delete the old one
-        if ($request->hasFile('path')) {
-
-            // ✅ Delete old file if exists
-            if ($arsip->path && Storage::disk('public')->exists($arsip->path)) {
-                Storage::disk('public')->delete($arsip->path);
-            }
-
-            // ✅ Store new file
-            $originalName = $request->file('path')->getClientOriginalName();
-            $newFilePath = $request->file('path')->store('arsip', 'public');
-
-            // ✅ Update fields
-            $arsip->path = $newFilePath;
-            $arsip->original_name = $originalName;
-        }
 
         $arsip->title = $validated['title'];
         $arsip->description = $validated['description'] ?? null;
         $arsip->save();
 
         return redirect()
-            ->route('admin.arsip')
-            ->with(['alert' => 'Arsip berhasil diperbarui!', 'type' => 'success']);
+            ->route('arsip.index')
+            ->with(['alert' => 'Arsip berhasil diperbarui!', 'type' => AlertEnum::SUCCESS->value]);
     }
 
     /**
@@ -126,20 +104,12 @@ class ArsipController extends Controller
     {
         $arsip = Arsip::findOrFail($id);
 
-        // 1️⃣ Delete file if exists
-        if ($arsip->path && Storage::disk('public')->exists($arsip->path)) {
-            Storage::disk('public')->delete($arsip->path);
-        }
-
-        // 2️⃣ Delete database record
         $arsip->delete();
-
-        // 3️⃣ Redirect with success alert
         return redirect()
-            ->route('admin.arsip')
+            ->route('arsip.index')
             ->with([
                 'alert' => 'Arsip berhasil dihapus!',
-                'type' => 'success',
+                'type' => AlertEnum::SUCCESS->value,
             ]);
     }
 }

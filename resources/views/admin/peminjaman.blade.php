@@ -4,7 +4,6 @@
 @section('dashboard-title', 'Peminjaman')
 @section('dashboard-desc', 'Lihat dan kelola seluruh data peminjaman')
 @section('main')
-    <x-delete-modal />
     <section class="max-w-7xl">
         <!-- Search + Create Button -->
         <div class="mb-4 flex flex-col gap-2">
@@ -21,7 +20,9 @@
                         </div>
                         <input type="search" id="default-search" name="search"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-                            placeholder="Cari berdasarkan judul" value="{{ request()->query('search') }}" />
+                            placeholder="Cari berdasarkan ID, arsip atau peminjam "
+                            value="{{ request()->query('search') }}" />
+                        <input type="hidden" name="tab" value="{{ request('tab') }}">
                         <button type="submit"
                             class="absolute bottom-2.5 end-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Cari</button>
                     </div>
@@ -30,6 +31,12 @@
             @include('admin.peminjaman.tabs')
         </div>
         @if (count($peminjamans) > 0)
+            <x-confirm-modal method="PUT" buttonName="updateModal" confirmText="OK">
+                <input type="hidden" name="status">
+            </x-confirm-modal>
+            @if (request()->query('tab') !== 'approved')
+                <x-confirm-modal method="DELETE" confirmText="Tolak" buttonName="deleteModal" />
+            @endif
             <div class="relative min-h-[50vh] overflow-x-auto rounded-lg pb-32">
                 <table class="w-full border border-gray-300 text-left text-sm text-gray-700">
                     <thead class="bg-gray-100">
@@ -76,13 +83,41 @@
                                     <div id="action-{{ $loop->iteration }}"
                                         class="z-10 hidden w-44 divide-y divide-gray-100 rounded bg-white shadow">
                                         <ul class="py-1 text-sm text-gray-700" aria-labelledby="action">
-                                            <li>
-                                                <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                                                    data-modal-target="editModal-{{ $peminjaman->id }}"
-                                                    data-modal-toggle="editModal-{{ $peminjaman->id }}">
-                                                    Edit
-                                                </button>
-                                            </li>
+                                            @if ($peminjaman->status === 'pending')
+                                                <li>
+                                                    <button
+                                                        class="block w-full px-4 py-2 text-left text-green-500 hover:bg-gray-100"
+                                                        type="button" data-modal-target="updateModal"
+                                                        data-modal-toggle="updateModal"
+                                                        data-target-PUT="{{ route('peminjaman.update', $peminjaman->id) }}"
+                                                        data-name-target="Ubah status peminjaman menjadi diterima?"
+                                                        onclick="changeStatusValue('approved')">
+                                                        Setujui pinjaman
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button
+                                                        class="block w-full px-4 py-2 text-left text-red-500 hover:bg-gray-100"
+                                                        type="button" data-modal-target="deleteModal"
+                                                        data-modal-toggle="deleteModal"
+                                                        data-target-DELETE="{{ route('peminjaman.destroy', $peminjaman->id) }}"
+                                                        data-name-target="Tolak pinjaman ini?">
+                                                        Tolak pinjaman
+                                                    </button>
+                                                </li>
+                                            @else
+                                                <li>
+                                                    <button
+                                                        class="block w-full px-4 py-2 text-left text-blue-500 hover:bg-gray-100"
+                                                        type="button" data-modal-target="updateModal"
+                                                        data-modal-toggle="updateModal"
+                                                        data-target-PUT="{{ route('peminjaman.update', $peminjaman->id) }}"
+                                                        data-name-target="Konfirmasi selesai peminjaman arsip ini?"
+                                                        onclick="changeStatusValue('returned')">
+                                                        Selesai pinjaman
+                                                    </button>
+                                                </li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </td>
@@ -101,3 +136,9 @@
         @endif
     </section>
 @endsection
+
+<script>
+    function changeStatusValue(status) {
+        document.querySelector('input[name="status"]').setAttribute('value', status);
+    }
+</script>

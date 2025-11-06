@@ -1,9 +1,9 @@
 <!-- Edit Modal -->
 <div id="editModal-{{ $arsip->id }}" role="dialog" tabindex="-1" aria-hidden="true"
-    class="h-modal fixed left-0 right-0 top-0 z-50 hidden w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-black/60 inset-0 h-full"
+    class="h-modal fixed inset-0 left-0 right-0 top-0 z-50 hidden h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-black/60"
     data-modal-backdrop="static">
 
-    <div class="relative h-auto p-4 w-md">
+    <div class="w-md relative h-auto p-4">
         <!-- Modal content -->
         <div class="relative rounded-lg bg-white p-4 shadow sm:p-5">
 
@@ -23,17 +23,16 @@
             </div>
 
             <!-- Modal body -->
-            <form action="{{ route('admin.arsip.update', $arsip->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('arsip.update', $arsip->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
-                <div class="mb-4 grid gap-4 sm:grid-cols">
+                <div class="sm:grid-cols mb-4 grid gap-4">
 
                     <!-- Judul -->
                     <div class="sm:col-span-2">
                         <label class="mb-2 block text-sm font-medium text-gray-900" for="title">Judul</label>
-                        <input type="text" name="title" id="title"
-                            value="{{ old('title', $arsip->title) }}"
+                        <input type="text" name="title" id="title" value="{{ old('title', $arsip->title) }}"
                             class="focus:border-primary-600 focus:ring-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
                             required>
                     </div>
@@ -47,29 +46,17 @@
                             class="focus:border-primary-600 focus:ring-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900">{{ old('description', $arsip->description) }}</textarea>
                     </div>
 
-                    <!-- File -->
-                    <div class="sm:col-span-2">
-                        <label class="mb-2 block text-sm font-medium text-gray-900" for="path">Ganti File</label>
-                        <input type="file" name="path" id="path"
-                            class="focus:border-primary-600 focus:ring-primary-600 block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900">
-                        @if ($arsip->original_name)
-                            <p class="mt-2 text-sm text-gray-500">
-                                File saat ini: <span class="font-semibold">{{ basename($arsip->original_name) }}</span>
-                            </p>
-                        @endif
-                    </div>
-
                 </div>
 
                 <!-- Action buttons -->
-                <div class="flex w-full justify-end gap-4 mt-8">
+                <div class="mt-8 flex w-full justify-end gap-4">
                     <button type="submit"
                         class="bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 inline-flex items-center rounded-lg px-5 py-2 text-sm font-medium text-white focus:outline-none focus:ring-4">
                         Simpan Perubahan
                     </button>
 
                     <button type="button"
-                        class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-8 py-2.5 text-center"
+                        class="rounded-lg border border-gray-800 px-8 py-2.5 text-center text-sm font-medium text-gray-900 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300"
                         data-modal-toggle="editModal-{{ $arsip->id }}">
                         Batal
                     </button>

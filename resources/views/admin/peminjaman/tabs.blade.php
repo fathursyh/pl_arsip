@@ -4,7 +4,7 @@
             <form method="get">
                 <input type="hidden" name="tab" value="pending">
                 <button type="submit"
-                    class="@if ($tab === 'pending') border-b-2 @endif  inline-block rounded-t-lg border-blue-600 p-4 hover:border-gray-300 hover:text-gray-600"
+                    class="@if ($tab === 'pending') border-b-2 text-blue-600 @endif  inline-block rounded-t-lg border-blue-600 p-4 hover:border-gray-300 hover:text-gray-600"
                     aria-current="page">Pengajuan</button>
             </form>
         </li>
@@ -12,7 +12,7 @@
             <form method="get">
                 <input type="hidden" name="tab" value="approved">
                 <button type="submit"
-                    class="@if ($tab === 'approved') border-b-2 @endif inline-block rounded-t-lg border-blue-600 p-4 hover:border-gray-300 hover:text-gray-600"
+                    class="@if ($tab === 'approved') border-b-2 text-blue-600 @endif inline-block rounded-t-lg border-blue-600 p-4 hover:border-gray-300 hover:text-gray-600"
                     aria-current="page">Diterima</button>
             </form>
         </li>

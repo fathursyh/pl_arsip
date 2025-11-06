@@ -13,17 +13,10 @@ Route::middleware([
         Route::get('/home', fn() => view('admin.home'))
         ->name('admin.home');
 
-        Route::resource('/arsip', ArsipController::class)->except(['create', 'edit'])->names([
-            'index' => 'admin.arsip',
-            'store' => 'admin.arsip.store',
-            'update' => 'admin.arsip.update',
-            'destroy' => 'admin.arsip.delete'
-        ]);
+        Route::resource('/arsip', ArsipController::class)->except(['create', 'edit']);
+        Route::resource('/peminjaman', PeminjamanController::class)->except(['create', 'edit']);
 
-        Route::get('/peminjaman', [PeminjamanController::class,'index'])
-        ->name('admin.peminjaman');
-
-        Route::get('/riwayat', fn() => view('admin.riwayat'))
+        Route::get('/riwayat', [PeminjamanController::class, 'history'])
         ->name('admin.riwayat');
 
         Route::get('/users', fn() => view('admin.users'))

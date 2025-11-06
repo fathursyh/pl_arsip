@@ -14,8 +14,9 @@
 
 <!-- Main modal -->
 <div id="createModal" role="dialog" tabindex="-1" aria-hidden="true"
-    class="h-modal fixed left-0 right-0 top-0 z-50 hidden w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-black/60 inset-0 h-full" data-modal-backdrop="static">
-    <div class="relative h-auto p-4 w-md">
+    class="h-modal fixed inset-0 left-0 right-0 top-0 z-50 hidden h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-black/60"
+    data-modal-backdrop="static">
+    <div class="w-md relative h-auto p-4">
         <!-- Modal content -->
         <div class="relative rounded-lg bg-white p-4 shadow sm:p-5">
             <!-- Modal header -->
@@ -37,9 +38,10 @@
             </div>
 
             <!-- Modal body -->
-            <form id="create-form" action="{{ route('admin.arsip.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="create-form" action="{{ route('arsip.store') }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
-                <div class="mb-4 grid gap-4 sm:grid-cols">
+                <div class="sm:grid-cols mb-4 grid gap-4">
                     <div class="sm:col-span-2">
                         <label for="title" class="mb-2 block text-sm font-medium text-gray-900">Judul</label>
                         <input type="text" name="title" id="title"
@@ -55,16 +57,9 @@
                             placeholder="Masukkan deskripsi arsip"></textarea>
                     </div>
 
-                    <!-- File -->
-                    <div class="sm:col-span-2">
-                        <label for="path" class="mb-2 block text-sm font-medium text-gray-900">Upload File</label>
-                        <input type="file" name="path" id="path" accept=".pdf,.docx,.doc"
-                            class="focus:border-primary-600 focus:ring-primary-600 block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900">
-                    </div>
-
                 </div>
 
-                <div class="flex w-full justify-end gap-4 mt-8">
+                <div class="mt-8 flex w-full justify-end gap-4">
                     <button type="submit"
                         class="bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 inline-flex items-center rounded-lg px-5 py-2 text-sm font-medium text-white focus:outline-none focus:ring-4">
                         <svg class="-ml-1 mr-1 h-6 w-6" fill="currentColor" viewBox="0 0 20 20"
@@ -75,7 +70,9 @@
                         </svg>
                         Tambah Arsip
                     </button>
-                    <button type="button" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-8 py-2.5 text-center" data-modal-toggle="createModal" onclick="clearForm()">Batal</button>
+                    <button type="button"
+                        class="rounded-lg border border-gray-800 px-8 py-2.5 text-center text-sm font-medium text-gray-900 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300"
+                        data-modal-toggle="createModal" onclick="clearForm()">Batal</button>
 
                 </div>
             </form>

@@ -4,7 +4,6 @@
 @section('dashboard-title', 'Arsip')
 @section('dashboard-desc', 'Lihat dan kelola seluruh data arsip')
 @section('main')
-    <x-delete-modal />
     <section class="max-w-7xl">
         <!-- Search + Create Button -->
         <div class="mb-4 flex items-center justify-between gap-4">
@@ -30,6 +29,7 @@
             @include('admin.arsip.create-modal')
         </div>
         @if (count($arsips) > 0)
+            <x-confirm-modal method="DELETE" confirmText="Hapus" buttonName="deleteModal" />
             <div class="relative min-h-[50vh] overflow-x-auto rounded-lg pb-32">
                 <table class="w-full border border-gray-300 text-left text-sm text-gray-700">
                     <thead class="bg-gray-100">
@@ -53,13 +53,13 @@
                                 <td class="border border-gray-300 px-4 py-2">{{ $arsip->title }}</td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $arsip->description }}</td>
                                 <td class="border border-gray-300 px-4 py-2">{{ date('d/m/Y', $arsip->createdAt) }}</td>
-                                <td class="border border-gray-300 px-4 py-2 capitalize text-center">
+                                <td class="border border-gray-300 px-4 py-2 text-center capitalize">
                                     @if ($arsip->status === 'available')
                                         <span
                                             class="rounded-sm bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Tersedia</span>
                                     @else
                                         <span
-                                            class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-sm">Dipinjam</span>
+                                            class="rounded-sm bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Dipinjam</span>
                                     @endif
                                 </td>
                                 <td class="border border-gray-300 px-2 py-2">
@@ -84,18 +84,13 @@
                                             </li>
                                         </ul>
                                         <div class="py-1 text-red-600">
-                                            <form id="delete-arsip" action="{{ route('admin.arsip.delete', $arsip) }}"
-                                                method="post" class="w-full">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                                                    type="button" data-modal-target="deleteModal"
-                                                    data-modal-toggle="deleteModal"
-                                                    data-delete-target="{{ route('admin.arsip.delete', $arsip->id) }}"
-                                                    data-name-target="{{ $arsip->title }}">
-                                                    Hapus
-                                                </button>
-                                            </form>
+                                            <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                                                type="button" data-modal-target="deleteModal"
+                                                data-modal-toggle="deleteModal"
+                                                data-target="{{ route('arsip.destroy', $arsip->id) }}"
+                                                data-name-target="Yakin ingin menghapus {{ $arsip->title }}?">
+                                                Hapus
+                                            </button>
                                         </div>
                                     </div>
                                 </td>

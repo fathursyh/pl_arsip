@@ -12,12 +12,12 @@
             ],
             [
                 'name' => 'Arsip',
-                'link' => 'admin.arsip',
+                'link' => 'arsip.index',
                 'icon' => 'arsip',
             ],
             [
                 'name' => 'Peminjaman',
-                'link' => 'admin.peminjaman',
+                'link' => 'peminjaman.index',
                 'icon' => 'pinjam',
             ],
             [
@@ -30,8 +30,6 @@
                 'link' => 'admin.users',
                 'icon' => 'users',
             ],
-            //reports
-            // users
         ],
         false => [
             [
