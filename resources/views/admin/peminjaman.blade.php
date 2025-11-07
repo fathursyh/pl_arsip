@@ -31,13 +31,13 @@
             @include('admin.peminjaman.tabs')
         </div>
         @if (count($peminjamans) > 0)
-            <x-confirm-modal method="PUT" buttonName="updateModal" confirmText="OK">
+            <x-confirm-modal method="PUT" buttonName="updateModal" confirmText="Selesai">
                 <input type="hidden" name="status">
             </x-confirm-modal>
             @if (request()->query('tab') !== 'approved')
                 <x-confirm-modal method="DELETE" confirmText="Tolak" buttonName="deleteModal" />
             @endif
-            <div class="relative min-h-[50vh] overflow-x-auto rounded-lg pb-32">
+            <div class="relative min-h-[50vh] overflow-x-auto rounded-lg pb-12">
                 <table class="w-full border border-gray-300 text-left text-sm text-gray-700">
                     <thead class="bg-gray-100">
                         <tr>
@@ -125,11 +125,10 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-
-            <!-- Pagination -->
-            <div class="mt-4">
-                {{ $peminjamans->links('vendor.pagination.tailwind') }}
+                <!-- Pagination -->
+                <div class="mt-4">
+                    {{ $peminjamans->links('vendor.pagination.tailwind') }}
+                </div>
             </div>
         @else
             @include('shared.no-data')

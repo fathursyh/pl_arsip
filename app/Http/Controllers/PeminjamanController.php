@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\AlertEnum;
+use App\Models\Arsip;
 use App\Models\Peminjaman;
 use Cache;
 use Illuminate\Http\Request;
@@ -75,8 +76,15 @@ class PeminjamanController extends Controller
         $status = $request->input('status');
         $peminjaman = Peminjaman::findOrFail($id);
         $peminjaman->status = $status;
-        if($status === 'returned') {
+        if ($status === 'approved') {
+            Arsip::findOrFail($peminjaman->arsip_id)->update([
+                'status' => 'unavailable'
+            ]);
+        } else if ($status === 'returned') {
             $peminjaman->returned = now();
+            Arsip::findOrFail($peminjaman->arsip_id)->update([
+                'status' => 'available'
+            ]);
         }
         $peminjaman->save();
         return redirect()

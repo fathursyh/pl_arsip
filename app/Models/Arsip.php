@@ -14,8 +14,7 @@ class Arsip extends Model
     protected $fillable = [
         'title',
         'description',
-        'path',
-        'original_name',
+        'status',
     ];
 
     public $incrementing = false;

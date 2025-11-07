@@ -30,7 +30,7 @@
         </div>
         @if (count($arsips) > 0)
             <x-confirm-modal method="DELETE" confirmText="Hapus" buttonName="deleteModal" />
-            <div class="relative min-h-[50vh] overflow-x-auto rounded-lg pb-32">
+            <div class="relative min-h-[50vh] overflow-x-auto rounded-lg pb-12">
                 <table class="w-full border border-gray-300 text-left text-sm text-gray-700">
                     <thead class="bg-gray-100">
                         <tr>
@@ -98,11 +98,10 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-
-            <!-- Pagination -->
-            <div class="mt-4">
-                {{ $arsips->links('vendor.pagination.tailwind') }}
+                <!-- Pagination -->
+                <div class="mt-4">
+                    {{ $arsips->links('vendor.pagination.tailwind') }}
+                </div>
             </div>
         @else
             @include('shared.no-data')
