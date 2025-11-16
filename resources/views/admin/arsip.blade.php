@@ -87,7 +87,7 @@
                                             <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                                 type="button" data-modal-target="deleteModal"
                                                 data-modal-toggle="deleteModal"
-                                                data-target="{{ route('arsip.destroy', $arsip->id) }}"
+                                                data-target-DELETE="{{ route('arsip.destroy', $arsip->id) }}"
                                                 data-name-target="Yakin ingin menghapus {{ $arsip->title }}?">
                                                 Hapus
                                             </button>

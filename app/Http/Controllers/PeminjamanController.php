@@ -85,6 +85,7 @@ class PeminjamanController extends Controller
             Arsip::findOrFail($peminjaman->arsip_id)->update([
                 'status' => 'available'
             ]);
+            Cache::flush();
         }
         $peminjaman->save();
         return redirect()
