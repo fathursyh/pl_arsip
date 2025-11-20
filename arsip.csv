@@ -1,0 +1,11 @@
+Tanggal Input,Pemohon,Lokasi Arsip,Nomor Risalah,Status Verifikasi,Uraian Barang,Nama Petugas,Jenis Lelang,Keterangan Tambahan
+2024-01-01,Budi Santoso,Rak A-1,RL-2024-001,Verified,Sebidang tanah seluas 100m2 SHM No. 123 di Bogor,Admin1,jenis1,Dokumen Lengkap
+2024-01-02,PT Maju Jaya,Rak B-2,RL-2024-002,Pending,1 Unit Mobil Toyota Avanza Veloz Tahun 2019 Silver,Admin2,jenis2,STNK Ada
+2024-01-03,Susi Susanti,Rak A-3,RL-2024-003,Verified,Rumah Tinggal Type 45/90 di Perumahan Griya Indah,Admin1,jenis1,-
+2024-01-04,CV Abadi Sentosa,Gudang 1,RL-2024-004,Verified,Paket Peralatan Kantor (5 Laptop 3 Printer),Admin3,jenis2,Aset Kantor
+2024-01-05,Ahmad Dhani,Rak C-1,RL-2024-005,Rejected,Ruko 2 Lantai di Jalan Merdeka No. 88 Jakarta,Admin2,jenis1,Sengketa
+2024-01-06,Bank Rakyat,Gudang 2,RL-2024-006,Verified,1 Unit Motor Honda Vario 150cc Tahun 2021 Hitam,Admin1,jenis2,Kunci Hilang
+2024-01-07,Citra Lestari,Rak D-4,RL-2024-007,Pending,Gudang Penyimpanan Barang seluas 500m2 di Bekasi,Admin3,jenis1,SHGB
+2024-01-08,PT Sumber Rejeki,Gudang Besar,RL-2024-008,Verified,Mesin Produksi Percetakan Heidelberg Speedmaster,Admin2,jenis2,Berat
+2024-01-09,Dewi Persik,Rak E-1,RL-2024-009,Verified,Tanah Kosong Peruntukan Kebun 1 Hektar di Sukabumi,Admin1,jenis1,Girik
+2024-01-10,Koperasi Unit Desa,Parkiran B,RL-2024-010,Verified,1 Unit Truk Mitsubishi Canter Box Tahun 2018,Admin3,jenis2,Pajak Mati

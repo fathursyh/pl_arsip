@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Enums\AlertEnum;
 use App\Models\Arsip;
 use Cache;
+use DB;
 use Illuminate\Http\Request;
+use Str;
 
 class ArsipController extends Controller
 {
@@ -144,5 +146,97 @@ class ArsipController extends Controller
                 'type' => AlertEnum::DANGER->value,
             ]);
         }
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|mimes:csv,txt|max:2048',
+        ]);
+
+        $file = $request->file('csv_file');
+
+        if (($handle = fopen($file->getRealPath(), 'r')) !== FALSE) {
+
+            // 1. GET THE HEADER ROW
+            $headerRow = fgetcsv($handle);
+
+            if (!$headerRow) {
+                return redirect()->back()->with('error', 'File is empty');
+            }
+
+            // 2. MAP HEADERS TO INDICES
+            // Example Result: ['nomor_risalah' => 0, 'pemohon' => 1, 'uraian_barang' => 3]
+            $headerMap = [];
+            foreach ($headerRow as $index => $columnName) {
+                // Convert "Nomor Risalah" -> "nomor_risalah" (lowercase, no spaces)
+                $slug = Str::slug($columnName, '_');
+                $headerMap[$slug] = $index;
+            }
+
+            // 3. CHECK FOR MISSING REQUIRED COLUMNS
+            $requiredColumns = ['nomor_risalah', 'pemohon', 'jenis_lelang', 'uraian_barang'];
+            $missingColumns = [];
+
+            foreach ($requiredColumns as $col) {
+                if (!array_key_exists($col, $headerMap)) {
+                    $missingColumns[] = str_replace('_', ' ', ucfirst($col));
+                }
+            }
+
+            if (!empty($missingColumns)) {
+                return redirect()->back()->with([
+                'alert' => 'Kolom berikut tidak ditemukan di CSV: ' . implode(', ', $missingColumns),
+                'type' => AlertEnum::DANGER->value,
+                ]);
+            }
+
+            // 4. PROCESS THE DATA
+            DB::beginTransaction();
+            try {
+                while (($row = fgetcsv($handle, 1000, ',')) !== FALSE) {
+
+                    // Use the MAP to find data, regardless of order
+                    $nomorVal = $row[$headerMap['nomor_risalah']] ?? null;
+                    $pemohonVal = $row[$headerMap['pemohon']] ?? null;
+                    $jenisRaw = $row[$headerMap['jenis_lelang']] ?? '';
+                    $uraianVal = $row[$headerMap['uraian_barang']] ?? null;
+
+                    // Skip empty rows (common issue at end of CSVs)
+                    if (!$nomorVal)
+                        continue;
+
+                    // Normalize Jenis Lelang
+                    $jenisClean = strtolower(trim($jenisRaw));
+                    $validJenis = in_array($jenisClean, ['jenis1', 'jenis2']) ? $jenisClean : 'jenis1';
+
+                    Arsip::updateOrCreate(
+                        ['nomor_risalah' => $nomorVal],
+                        [
+                            'pemohon' => $pemohonVal,
+                            'jenis_lelang' => $validJenis,
+                            'uraian_barang' => $uraianVal,
+                            'status' => true,
+                        ]
+                    );
+                }
+
+                DB::commit();
+                fclose($handle);
+                return redirect()->route('arsip.index')->with([
+                    'alert' => 'Berhasil mengupload file arsip!',
+                    'type' => AlertEnum::SUCCESS->value,
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with([
+                    'alert' => $e->getMessage(),
+                    'type' => AlertEnum::DANGER->value,
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('error', 'Gagal membuka file.');
     }
 }

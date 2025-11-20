@@ -27,9 +27,9 @@
                 </form>
             </div>
             <div class="flex gap-2">
-                <button id="upload-csv"
-                    class="flex gap-1 items-center bg-neutral-primary border border-green-700 text-green-700 hover:bg-gray-800 hover:text-white font-medium leading-5 rounded-lg text-sm px-4 focus:outline-none"
-                    type="button">
+                <a id="upload-csv"
+                href="{{ route('arsip.upload-view') }}"
+                    class="flex gap-1 items-center bg-neutral-primary border border-green-700 text-green-700 hover:bg-gray-800 hover:text-white font-medium leading-5 rounded-lg text-sm px-4 focus:outline-none">
                     <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                         width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd"
@@ -37,7 +37,7 @@
                             clip-rule="evenodd" />
                     </svg>
                     <span class="hidden md:block">Upload CSV</span>
-                </button>
+                </a>
                 @include('admin.arsip.create-modal')
             </div>
         </div>

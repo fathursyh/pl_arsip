@@ -14,10 +14,7 @@ Route::middleware([
 ])->group(function () {
     // role admin disini
     Route::group(["prefix" => "/admin"], function () {
-
-
         Route::get('/home', function () {
-
             $totalArsip = Arsip::count();
             $activeLoans = Peminjaman::where('status', 'approved')->count();
             $totalUsers = User::where('role', '!=', 'admin')->count();
@@ -37,6 +34,11 @@ Route::middleware([
             ]);
         })
             ->name('admin.home');
+        Route::get('/arsip/upload', fn() => view('admin.arsip.upload-arsip'))
+            ->name('arsip.upload-view');
+
+        Route::post('/arsip/upload', [ArsipController::class, 'upload'])
+            ->name('arsip.upload');
 
         Route::resource('/arsip', ArsipController::class)->except(['create', 'edit']);
         Route::resource('/peminjaman', PeminjamanController::class)->except(['create', 'edit']);
@@ -48,5 +50,6 @@ Route::middleware([
             ->names([
                 'index' => 'admin.users',
             ]);
+
     });
 });
