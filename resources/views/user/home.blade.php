@@ -1,7 +1,7 @@
 @extends('layouts.dashboard-layout')
 
 @section('title', 'Dashboard | Home')
-@section('dashboard-title', 'Dashboard')
+@section('dashboard-title', 'Beranda')
 @section('dashboard-desc', 'Selamat datang kembali! Berikut statistik terbaru Anda')
 @section('main')
     <!-- Stats Grid -->
@@ -15,10 +15,9 @@
                             d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
                     </svg>
                 </div>
-                <span class="text-sm font-medium text-green-600">+12%</span>
             </div>
             <h3 class="mb-1 text-sm font-medium text-gray-600">Total Arsip</h3>
-            <p class="text-3xl font-bold text-gray-900">1,234</p>
+            <p class="text-3xl font-bold text-gray-900">{{ $totalArsip }}</p>
         </div>
 
         <!-- Stat Card 2 - Peminjaman Aktif -->
@@ -31,10 +30,9 @@
                         </path>
                     </svg>
                 </div>
-                <span class="text-sm font-medium text-green-600">+5%</span>
             </div>
             <h3 class="mb-1 text-sm font-medium text-gray-600">Peminjaman Aktif</h3>
-            <p class="text-3xl font-bold text-gray-900">89</p>
+            <p class="text-3xl font-bold text-gray-900">{{ $activeLoans }}</p>
         </div>
 
         <!-- Stat Card 3 - Total Users -->
@@ -47,10 +45,9 @@
                         </path>
                     </svg>
                 </div>
-                <span class="text-sm font-medium text-green-600">+8%</span>
             </div>
             <h3 class="mb-1 text-sm font-medium text-gray-600">Total Users</h3>
-            <p class="text-3xl font-bold text-gray-900">456</p>
+            <p class="text-3xl font-bold text-gray-900">{{ $totalUsers }}</p>
         </div>
 
         <!-- Stat Card 4 - Dokumen Baru -->
@@ -63,30 +60,81 @@
                         </path>
                     </svg>
                 </div>
-                <span class="text-sm font-medium text-red-600">-2%</span>
             </div>
-            <h3 class="mb-1 text-sm font-medium text-gray-600">Dokumen Baru</h3>
-            <p class="text-3xl font-bold text-gray-900">23</p>
+            <h3 class="mb-1 text-sm font-medium text-gray-600">Riwayat Peminjaman</h3>
+            <p class="text-3xl font-bold text-gray-900">{{ $loanHistory }}</p>
         </div>
     </div>
 
     <!-- Chart Placeholder -->
     <div class="flex-2 flex flex-col rounded-lg border border-gray-200 bg-white p-6 shadow">
         <div class="mb-4">
-            <h2 class="text-xl font-bold text-gray-900">Activity Overview</h2>
-            <p class="mt-1 text-sm text-gray-600">Monthly statistics and trends</p>
+            <h2 class="text-xl font-bold text-gray-900">Peminjaman Tahun {{ date('Y') }}</h2>
+            <p class="mt-1 text-sm text-gray-600">Statistik peminjaman tahun ini</p>
         </div>
-        <div class="flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50">
-            <div class="text-center">
-                <svg class="mx-auto mb-4 h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                    </path>
-                </svg>
-                <p class="font-medium text-gray-500">Chart Placeholder</p>
-                <p class="mt-1 text-sm text-gray-400">Chart component will be inserted here</p>
+        <div class="p-8 flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50">
+            <div class="relative h-full w-full">
+                <canvas id="chartData"></canvas>
             </div>
         </div>
     </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const data = @json($chartData);
+        const ctx = document.getElementById('chartData').getContext('2d');
+        console.log(data);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(item => item.month),
+                datasets: [{
+                    label: 'Peminjaman',
+                    data: data.map(item => item.count),
+                    borderColor: '#2563EB', // Tailwind blue-600
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)', // Blue with opacity
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#2563EB',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true, // Fills area under the line
+                    tension: 0.4 // Makes the line curvy (smooth)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false // Hiding legend since title explains it
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f3f4f6' // Lighter grid lines
+                        },
+                        ticks: {
+                            stepSize: 1 // Ensure whole numbers only (no 1.5 loans)
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false // Clean look without vertical grid lines
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 @endsection
