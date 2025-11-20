@@ -88,7 +88,7 @@ class ArsipController extends Controller
      */
     public function update(Request $request, Arsip $arsip)
     {
-        $input = $request->only(['nomor_risalah', 'pemohon', 'jenis_lelang', 'uraian_barang', 'status']);
+        $input = $request->only(['nomor_risalah', 'pemohon', 'jenis_lelang', 'uraian_barang']);
         $arsip->fill($input);
 
         if ($arsip->isClean()) {
@@ -100,7 +100,6 @@ class ArsipController extends Controller
             'pemohon' => 'required|string|max:255',
             'jenis_lelang' => 'required|in:jenis1,jenis2',
             'uraian_barang' => 'required|string',
-            'status' => 'nullable|boolean',
         ]);
         try {
 
@@ -108,7 +107,6 @@ class ArsipController extends Controller
             $arsip->pemohon = $validated['pemohon'];
             $arsip->jenis_lelang = $validated['jenis_lelang'];
             $arsip->uraian_barang = $validated['uraian_barang'];
-            $arsip->status = $validated['status'] ?? $arsip->status;
             $arsip->save();
 
             return redirect()

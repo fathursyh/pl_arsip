@@ -89,22 +89,6 @@
                         @enderror
                     </div>
 
-                    {{-- Status --}}
-                    <div class="sm:col-span-2">
-                        <label class="mb-2 block text-sm font-medium text-gray-900" for="status">Status</label>
-                        <select name="status" id="status"
-                            class="@error('status') border-red-500 focus:ring-red-500 focus:border-red-500
-                                @else border-gray-300 focus:ring-primary-600 focus:border-primary-600 @enderror block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900">
-                            <option value="1" {{ old('status', $arsip->status) == 1 ? 'selected' : '' }}>Tersedia
-                            </option>
-                            <option value="0" {{ old('status', $arsip->status) == 0 ? 'selected' : '' }}>Dipinjam
-                            </option>
-                        </select>
-                        @error('status')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                 </div>
 
                 <!-- Buttons -->

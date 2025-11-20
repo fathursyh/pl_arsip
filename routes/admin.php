@@ -19,11 +19,18 @@ Route::middleware([
         $activeLoans = Peminjaman::where('status', 'approved')->count();
         $totalUsers = User::where('role', '!=', 'admin')->count();
         $loanHistory = Peminjaman::where('status', 'returned')->count();
+        $chartData = Peminjaman::selectRaw('MONTHNAME(borrowed) as month, COUNT(*) as count')
+            ->whereYear('created_at', date('Y'))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get()->toArray();
+
         Route::get('/home', fn() => view('admin.home', [
             'totalArsip' => $totalArsip,
             'activeLoans' => $activeLoans,
             'totalUsers' => $totalUsers,
-            'loanHistory' => $loanHistory
+            'loanHistory' => $loanHistory,
+            'chartData' => $chartData
         ]))
             ->name('admin.home');
 
