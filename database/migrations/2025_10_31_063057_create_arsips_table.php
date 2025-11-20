@@ -11,10 +11,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('arsips', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('title');
-            $table->string('description');
-            $table->enum('status', ['available','unavailable'])->default('available');
+            $table->ulid('id')->primary();
+            $table->string('nomor_risalah')->unique();
+            $table->string('pemohon');
+            $table->enum('jenis_lelang', ['jenis1', 'jenis2']);
+            $table->text('uraian_barang');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

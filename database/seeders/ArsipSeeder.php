@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Arsip;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 
@@ -14,12 +13,15 @@ class ArsipSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
+        $faker = Faker::create('id_ID');
 
         for ($i = 0; $i < 50; $i++) {
             Arsip::create([
-                'title' => $faker->sentence(3),
-                'description' => $faker->paragraph(2),
+                'nomor_risalah' => 'RSL/' . date('Y') . '/' . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
+                'pemohon' => $faker->name(),
+                'jenis_lelang' => $faker->randomElement(['jenis1', 'jenis2']),
+                'uraian_barang' => $faker->paragraph(3),
+                'status' => $faker->boolean(80), // 80% chance of true
             ]);
         }
     }

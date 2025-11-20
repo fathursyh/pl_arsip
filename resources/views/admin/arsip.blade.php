@@ -20,7 +20,7 @@
                         </div>
                         <input type="search" id="default-search" name="search"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-                            placeholder="Cari berdasarkan judul" value="{{ request()->query('search') }}" />
+                            placeholder="Cari berdasarkan nomor risalah" value="{{ request()->query('search') }}" />
                         <button type="submit"
                             class="absolute bottom-2.5 end-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Cari</button>
                     </div>
@@ -35,8 +35,10 @@
                     <thead class="bg-gray-100">
                         <tr>
                             <th class="border border-gray-300 px-2 py-2 text-center">No</th>
-                            <th class="border border-gray-300 px-4 py-2">Judul</th>
-                            <th class="border border-gray-300 px-4 py-2">Deskripsi</th>
+                            <th class="border border-gray-300 px-4 py-2">Nomor Risalah</th>
+                            <th class="border border-gray-300 px-4 py-2">Pemohon</th>
+                            <th class="border border-gray-300 px-4 py-2">Jenis Lelang</th>
+                            <th class="border border-gray-300 px-4 py-2">Uraian Barang</th>
                             <th class="border border-gray-300 px-4 py-2">Dibuat</th>
                             <th class="border border-gray-300 px-4 py-2 text-center">Status</th>
                             <th class="border border-gray-300 px-4 py-2 text-center">Action</th>
@@ -50,11 +52,13 @@
                             <tr class="hover:bg-gray-100">
                                 <td class="border border-gray-300 px-2 py-2 text-center">
                                     {{ ($arsips->currentPage() - 1) * $arsips->perPage() + $loop->iteration }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $arsip->title }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $arsip->description }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ date('d/m/Y', $arsip->createdAt) }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $arsip->nomor_risalah }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $arsip->pemohon }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $arsip->jenis_lelang }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $arsip->uraian_barang }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $arsip->created_at->format('d/m/Y') }}</td>
                                 <td class="border border-gray-300 px-4 py-2 text-center capitalize">
-                                    @if ($arsip->status === 'available')
+                                    @if ($arsip->status)
                                         <span
                                             class="rounded-sm bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Tersedia</span>
                                     @else
@@ -78,7 +82,8 @@
                                             <li>
                                                 <button class="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                                     data-modal-target="editModal-{{ $arsip->id }}"
-                                                    data-modal-toggle="editModal-{{ $arsip->id }}">
+                                                    data-modal-toggle="editModal-{{ $arsip->id }}"
+                                                    onclick="toggleEdit()">
                                                     Edit
                                                 </button>
                                             </li>
@@ -88,7 +93,7 @@
                                                 type="button" data-modal-target="deleteModal"
                                                 data-modal-toggle="deleteModal"
                                                 data-target-DELETE="{{ route('arsip.destroy', $arsip->id) }}"
-                                                data-name-target="Yakin ingin menghapus {{ $arsip->title }}?">
+                                                data-name-target="Yakin ingin menghapus arsip dengan nomor risalah:  {{ $arsip->nomor_risalah }}?">
                                                 Hapus
                                             </button>
                                         </div>
@@ -107,4 +112,13 @@
             @include('shared.no-data')
         @endif
     </section>
+
+    <script>
+        function toggleEdit() {
+            const url = new URL(window.location);
+            url.searchParams.set('edit', '1');
+            window.history.pushState({}, '', url);
+        }
+    </script>
+
 @endsection

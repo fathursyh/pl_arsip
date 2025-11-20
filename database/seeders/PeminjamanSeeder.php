@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Peminjaman;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
 
 class PeminjamanSeeder extends Seeder
 {
@@ -13,17 +14,28 @@ class PeminjamanSeeder extends Seeder
      */
     public function run(): void
     {
-        $arsip = \App\Models\Arsip::pluck('id');
+        $faker = Faker::create('id_ID');
+
+        $arsip = \App\Models\Arsip::pluck('nomor_risalah');
         $users = \App\Models\User::pluck('id');
 
-        // Insert 5 sample rows
-        for ($i = 0; $i < 5; $i++) {
+        // Insert sample rows with varied statuses
+        for ($i = 0; $i < 20; $i++) {
+            $status = $faker->randomElement(['pending', 'approved', 'returned']);
+            $borrowedDate = now()->subDays(rand(1, 30));
+
+            // Set returned date only if status is 'returned'
+            $returnedDate = null;
+            if ($status === 'returned') {
+                $returnedDate = $borrowedDate->copy()->addDays(rand(1, 14))->toDateString();
+            }
+
             Peminjaman::create([
                 'arsip_id' => $arsip->random(),
                 'user_id' => $users->random(),
-                'borrowed' => now()->subDays(rand(1, 10))->toDateString(),
-                'returned' => null,
-                'status' => 'pending',
+                'borrowed' => $borrowedDate->toDateString(),
+                'returned' => $returnedDate,
+                'status' => $status,
             ]);
         }
     }

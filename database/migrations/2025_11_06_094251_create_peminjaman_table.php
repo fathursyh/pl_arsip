@@ -11,9 +11,13 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('peminjaman', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id('id')->primary();
 
-            $table->foreignUuid('arsip_id')->constrained('arsips')->cascadeOnDelete();
+            $table->string('arsip_id');
+            $table->foreign('arsip_id')->references('nomor_risalah')->on('arsips')
+            ->cascadeOnUpdate()
+            ->cascadeOnDelete();
+
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
 
             $table->date('borrowed');
@@ -31,6 +35,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('peminjamen');
+        Schema::dropIfExists('peminjaman');
     }
 };

@@ -8,11 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Peminjaman extends Model
 {
-    use HasUuids;
     protected $table = 'peminjaman';
-    public $incrementing = false;
-    protected $keyType = 'string';
-
     protected $fillable = [
         'id',
         'arsip_id',

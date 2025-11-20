@@ -18,7 +18,7 @@ class ArsipController extends Controller
             'arsip_' . md5($search) . '_page_' . $page,
             30,
             fn() =>
-            Arsip::where('title', 'like', "%$search%")->latest()->paginate(10)
+            Arsip::where('nomor_risalah', 'like', "%$search%")->latest()->paginate(10)
         );
         return view('admin.arsip', compact('arsips'));
     }
@@ -36,16 +36,21 @@ class ArsipController extends Controller
      */
     public function store(Request $request)
     {
-        // 1️⃣ Validate input
+        // Validate input
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'nomor_risalah' => 'required|string|max:255|unique:arsips,nomor_risalah',
+            'pemohon' => 'required|string|max:255',
+            'jenis_lelang' => 'required|in:jenis1,jenis2',
+            'uraian_barang' => 'required|string',
         ]);
-
         try {
+
             Arsip::create([
-                'title' => $validated['title'],
-                'description' => $validated['description'] ?? null,
+                'nomor_risalah' => $validated['nomor_risalah'],
+                'pemohon' => $validated['pemohon'],
+                'jenis_lelang' => $validated['jenis_lelang'],
+                'uraian_barang' => $validated['uraian_barang'],
+                'status' => true,
             ]);
 
             return redirect()
@@ -55,8 +60,8 @@ class ArsipController extends Controller
                     'type' => AlertEnum::SUCCESS->value,
                 ]);
         } catch (\Exception $e) {
-            return back()->with([
-                'alert' => 'Terjadi kesalahan dalam pendataan arsip!',
+            return back()->withInput()->with([
+                'alert' => 'Terjadi kesalahan pada server. Silakan coba lagi.',
                 'type' => AlertEnum::DANGER->value,
             ]);
         }
@@ -83,18 +88,41 @@ class ArsipController extends Controller
      */
     public function update(Request $request, Arsip $arsip)
     {
+        $input = $request->only(['nomor_risalah', 'pemohon', 'jenis_lelang', 'uraian_barang', 'status']);
+        $arsip->fill($input);
+
+        if ($arsip->isClean()) {
+            return back();
+        }
+
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'nomor_risalah' => 'required|string|max:255|unique:arsips,nomor_risalah,' . $arsip->id,
+            'pemohon' => 'required|string|max:255',
+            'jenis_lelang' => 'required|in:jenis1,jenis2',
+            'uraian_barang' => 'required|string',
+            'status' => 'nullable|boolean',
         ]);
+        try {
 
-        $arsip->title = $validated['title'];
-        $arsip->description = $validated['description'] ?? null;
-        $arsip->save();
+            $arsip->nomor_risalah = $validated['nomor_risalah'];
+            $arsip->pemohon = $validated['pemohon'];
+            $arsip->jenis_lelang = $validated['jenis_lelang'];
+            $arsip->uraian_barang = $validated['uraian_barang'];
+            $arsip->status = $validated['status'] ?? $arsip->status;
+            $arsip->save();
 
-        return redirect()
-            ->route('arsip.index')
-            ->with(['alert' => 'Arsip berhasil diperbarui!', 'type' => AlertEnum::SUCCESS->value]);
+            return redirect()
+                ->route('arsip.index')
+                ->with([
+                    'alert' => 'Arsip berhasil diperbarui!',
+                    'type' => AlertEnum::SUCCESS->value,
+                ]);
+        } catch (\Exception $e) {
+            return back()->withInput()->with([
+                'alert' => 'Terjadi kesalahan pada server.',
+                'type' => AlertEnum::DANGER->value,
+            ]);
+        }
     }
 
     /**
@@ -102,14 +130,21 @@ class ArsipController extends Controller
      */
     public function destroy($id)
     {
-        $arsip = Arsip::findOrFail($id);
+        try {
+            $arsip = Arsip::findOrFail($id);
+            $arsip->delete();
 
-        $arsip->delete();
-        return redirect()
-            ->route('arsip.index')
-            ->with([
-                'alert' => 'Arsip berhasil dihapus!',
-                'type' => AlertEnum::SUCCESS->value,
+            return redirect()
+                ->route('arsip.index')
+                ->with([
+                    'alert' => 'Arsip berhasil dihapus!',
+                    'type' => AlertEnum::SUCCESS->value,
+                ]);
+        } catch (\Exception $e) {
+            return back()->with([
+                'alert' => 'Terjadi kesalahan pada server. Silakan coba lagi.',
+                'type' => AlertEnum::DANGER->value,
             ]);
+        }
     }
 }
