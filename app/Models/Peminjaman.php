@@ -20,7 +20,7 @@ class Peminjaman extends Model
 
     public function arsip()
     {
-        return $this->belongsTo(Arsip::class);
+        return $this->belongsTo(Arsip::class, 'arsip_id', 'nomor_risalah');
     }
 
     public function user()
@@ -28,7 +28,7 @@ class Peminjaman extends Model
         return $this->belongsTo(User::class);
     }
 
-     protected static function boot()
+    protected static function boot()
     {
         parent::boot();
 

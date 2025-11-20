@@ -1,7 +1,7 @@
 @extends('layouts.dashboard-layout')
 
 @section('title', 'Dashboard | Arsip')
-@section('dashboard-title', 'Arsip')
+@section('dashboard-title', 'Arsip Lelang')
 @section('dashboard-desc', 'Lihat dan kelola seluruh data arsip')
 @section('main')
     <section class="max-w-7xl">
@@ -51,7 +51,8 @@
 
                             <tr class="hover:bg-gray-100">
                                 <td class="border border-gray-300 px-2 py-2 text-center">
-                                    {{ ($arsips->currentPage() - 1) * $arsips->perPage() + $loop->iteration }}</td>
+                                    {{ ($arsips->currentPage() - 1) * $arsips->perPage() + $loop->iteration }}
+                                </td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $arsip->nomor_risalah }}</td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $arsip->pemohon }}</td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $arsip->jenis_lelang }}</td>
@@ -60,10 +61,10 @@
                                 <td class="border border-gray-300 px-4 py-2 text-center capitalize">
                                     @if ($arsip->status)
                                         <span
-                                            class="rounded-sm bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Tersedia</span>
+                                            class="rounded-sm bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Available</span>
                                     @else
                                         <span
-                                            class="rounded-sm bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Dipinjam</span>
+                                            class="rounded-sm bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Borrowed</span>
                                     @endif
                                 </td>
                                 <td class="border border-gray-300 px-2 py-2">

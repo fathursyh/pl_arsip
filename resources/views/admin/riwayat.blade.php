@@ -5,9 +5,10 @@
 @section('title', 'Dashboard | Riwayat')
 @section('dashboard-title', 'Riwayat Peminjaman')
 @section('dashboard-desc', 'Lihat seluruh riwayat data peminjaman')
+
 @section('main')
     <section class="max-w-7xl">
-        <!-- Search + Create Button -->
+        <!-- Search -->
         <div class="mb-4 flex flex-col gap-2">
             <div class="flex-1">
                 <form class="max-w-md" method="GET">
@@ -22,56 +23,70 @@
                         </div>
                         <input type="search" id="default-search" name="search"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-                            placeholder="Cari berdasarkan ID, arsip atau peminjam "
+                            placeholder="Cari No. Risalah, Uraian, atau Peminjam"
                             value="{{ request()->query('search') }}" />
-                        <input type="hidden" name="tab" value="{{ request('tab') }}">
+
                         <button type="submit"
-                            class="absolute bottom-2.5 end-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Cari</button>
+                            class="absolute bottom-2.5 end-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                            Cari
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
-        @if (count($riwayat) > 0)
-            <div class="relative min-h-[50vh] overflow-x-auto rounded-lg pb-32">
+
+        @if ($riwayat->count() > 0)
+            <div class="relative min-h-[50vh] overflow-x-auto rounded-lg pb-12">
                 <table class="w-full border border-gray-300 text-left text-sm text-gray-700">
                     <thead class="bg-gray-100">
                         <tr>
-                            <th class="border border-gray-300 px-2 py-2 text-center">ID</th>
-                            <th class="border border-gray-300 px-4 py-2">Arsip</th>
+                            <th class="border border-gray-300 px-2 py-2 text-center">No</th>
+                            <th class="border border-gray-300 px-4 py-2">Arsip (No. Risalah / Uraian)</th>
                             <th class="border border-gray-300 px-4 py-2">Peminjam</th>
-                            <th class="border border-gray-300 px-4 py-2">Dipinjam</th>
-                            <th class="border border-gray-300 px-4 py-2">Dikembalikan</th>
-                            <th class="border border-gray-300 px-4 py-2 text-center">status</th>
+                            <th class="border border-gray-300 px-4 py-2">Tgl Pinjam</th>
+                            <th class="border border-gray-300 px-4 py-2">Tgl Kembali</th>
+                            <th class="border border-gray-300 px-4 py-2 text-center">Status</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         @foreach ($riwayat as $peminjaman)
                             <tr class="hover:bg-gray-100">
-                                <td class="max-w-32 border border-gray-300 px-4 py-2">
-                                    {{ $peminjaman->id }}
-                                </td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $peminjaman->arsip->title }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $peminjaman->user->name }}</td>
-                                <td class="border border-gray-300 px-4 py-2">
-                                    {{ date('d/m/y', strtotime($peminjaman->borrowed)) }}
+                                <td class="max-w-32 border border-gray-300 px-4 py-2 text-center">
+                                    {{ ($riwayat->currentPage() - 1) * $riwayat->perPage() + $loop->iteration }}
                                 </td>
                                 <td class="border border-gray-300 px-4 py-2">
-                                    {{ date('d/m/y', strtotime($peminjaman->returned)) }}
+                                    <div class="font-semibold text-gray-900">
+                                        {{ $peminjaman->arsip->nomor_risalah ?? 'Data Arsip Hilang' }}
+                                    </div>
+                                    <div class="text-xs text-gray-500">
+                                        {{ Str::limit($peminjaman->arsip->uraian_barang ?? '-', 60) }}
+                                    </div>
+                                </td>
+                                <td class="border border-gray-300 px-4 py-2 capitalize">
+                                    {{ $peminjaman->user->name ?? 'User Tidak Ditemukan' }}
+                                </td>
+                                <td class="border border-gray-300 px-4 py-2">
+                                    {{ date('d/m/Y', strtotime($peminjaman->borrowed)) }}
+                                </td>
+                                <td class="border border-gray-300 px-4 py-2">
+                                    {{ $peminjaman->returned ? date('d/m/Y', strtotime($peminjaman->returned)) : '-' }}
                                 </td>
                                 <td class="max-w-12 border border-gray-300 px-4 py-2 text-center">
                                     <span
-                                        class="rounded-sm bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Returned</span>
+                                        class="rounded-sm bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                                        Returned
+                                    </span>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-            </div>
 
-            <!-- Pagination -->
-            <div class="mt-4">
-                {{ $riwayat->links('vendor.pagination.tailwind') }}
+                <!-- Pagination -->
+                <div class="mt-4">
+                    {{ $riwayat->appends(request()->query())->links('vendor.pagination.tailwind') }}
+                </div>
             </div>
         @else
             @include('shared.no-data')

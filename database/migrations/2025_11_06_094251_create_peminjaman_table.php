@@ -18,7 +18,7 @@ return new class extends Migration {
             ->cascadeOnUpdate()
             ->cascadeOnDelete();
 
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUlid('user_id')->constrained('users')->cascadeOnDelete();
 
             $table->date('borrowed');
             $table->date('returned')->nullable();

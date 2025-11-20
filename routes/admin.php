@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\ArsipController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\UserController;
+use App\Models\Arsip;
+use App\Models\Peminjaman;
+use App\Models\User;
 
 Route::middleware([
     'web',
@@ -10,16 +14,28 @@ Route::middleware([
 ])->group(function () {
     // role admin disini
     Route::group(["prefix" => "/admin"], function () {
-        Route::get('/home', fn() => view('admin.home'))
-        ->name('admin.home');
+
+        $totalArsip = Arsip::count();
+        $activeLoans = Peminjaman::where('status', 'approved')->count();
+        $totalUsers = User::where('role', '!=', 'admin')->count();
+        $loanHistory = Peminjaman::where('status', 'returned')->count();
+        Route::get('/home', fn() => view('admin.home', [
+            'totalArsip' => $totalArsip,
+            'activeLoans' => $activeLoans,
+            'totalUsers' => $totalUsers,
+            'loanHistory' => $loanHistory
+        ]))
+            ->name('admin.home');
 
         Route::resource('/arsip', ArsipController::class)->except(['create', 'edit']);
         Route::resource('/peminjaman', PeminjamanController::class)->except(['create', 'edit']);
 
         Route::get('/riwayat', [PeminjamanController::class, 'history'])
-        ->name('admin.riwayat');
+            ->name('admin.riwayat');
 
-        Route::get('/users', fn() => view('admin.users'))
-        ->name('admin.users');
+        Route::resource('/users', UserController::class)
+            ->names([
+                'index' => 'admin.users',
+            ]);
     });
 });

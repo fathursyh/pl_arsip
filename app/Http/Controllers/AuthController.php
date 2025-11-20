@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\AlertEnum;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -13,28 +13,24 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function registerPage() {
-        return;
-    }
-
     /* ---------- LOGIC ------------ */
     //* login
     public function login(Request $request)
     {
         $request->validate([
-            "email" => "required|string|email|max:100",
-            "password" => "required|string:max:100",
+            "nip" => "required|string|max:20", // NIP replaced Email
+            "password" => "required|string|max:100",
             'remember' => 'sometimes|boolean'
         ], [
-            'email.required' => 'Email tidak boleh kosong.',
-            'email.email' => 'Format email tidak valid.',
+            'nip.required' => 'NIP tidak boleh kosong.',
             'password.required' => 'Password tidak boleh kosong.'
         ]);
 
-        $credentials = $request->only('email','password');
+        $credentials = $request->only('nip', 'password');
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
             return match (auth()->user()->role) {
                 'admin' => redirect()->intended(route('admin.home'))
                     ->with([
@@ -46,14 +42,17 @@ class AuthController extends Controller
                         'alert' => 'Anda berhasil masuk akun!',
                         'type' => AlertEnum::SUCCESS->value,
                     ]),
+                default => redirect()->route('login')->withErrors(['error' => 'Role akun tidak dikenali.']),
             };
         }
-        $error = 'Email atau password salah.';
+
+        $error = 'NIP atau password salah.';
+
         return back()->withErrors([
-            'email' => $error,
+            'nip' => $error,
             'password' => $error,
             'error' => 'Proses masuk akun gagal!'
-        ])->onlyInput('email');
+        ])->onlyInput('nip');
     }
 
     //* logout
@@ -63,11 +62,11 @@ class AuthController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-        return redirect()->route('login')
-        ->with([
-            'alert' => 'Anda berhasil keluar akun!',
-            'type'=> AlertEnum::INFO->value,
-        ]);
 
+        return redirect()->route('login')
+            ->with([
+                'alert' => 'Anda berhasil keluar akun!',
+                'type'=> AlertEnum::INFO->value,
+            ]);
     }
 }

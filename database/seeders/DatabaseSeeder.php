@@ -18,12 +18,12 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create([
             'name' => 'root',
-            'email' => 'root@admin.com',
+            'nip' => '123',
             'role' => RoleEnum::ADMIN,
         ]);
         User::factory()->create([
-            'name' => 'user',
-            'email' => 'user@admin.com',
+            'name' => 'Laili Athiyyah',
+            'nip' => '321',
             'role' => RoleEnum::USER,
         ]);
           $this->call([

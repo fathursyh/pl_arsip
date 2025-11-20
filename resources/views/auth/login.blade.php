@@ -18,12 +18,12 @@
                         @method('POST')
                         @csrf
                         <div>
-                            <label for="email" class="mb-2 block text-sm font-medium text-gray-900">Alamat Email</label>
-                            <input type="email" name="email" id="email"
+                            <label for="nip" class="mb-2 block text-sm font-medium text-gray-900">NIP</label>
+                            <input type="text" name="nip" id="nip"
                                 class="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900" autofocus
-                                value="{{ old('email') }}"
+                                value="{{ old('nip') }}"
                             >
-                            @error('email')
+                            @error('nip')
                                 <p class="ms-1 mt-1 text-sm text-red-500">{{ $message }}</p>
                             @enderror
                         </div>
@@ -51,10 +51,6 @@
                             class="bg-primary-600 hover:bg-primary-700 focus:ring-primary-300 w-full rounded-lg px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4">
                             Masuk
                         </button>
-                        <p class="text-sm font-light text-gray-500">
-                            Anda belum memiliki akun? <a href="#"
-                                class="text-primary-600 font-medium hover:underline">Daftar</a>
-                        </p>
                     </form>
                 </div>
             </div>
