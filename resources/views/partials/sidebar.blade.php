@@ -42,7 +42,7 @@
                 'link' => 'user.arsip',
                 'icon' => 'arsip',
             ],
-                   [
+            [
                 'name' => 'Peminjaman',
                 'link' => 'user.peminjaman',
                 'icon' => 'pinjam',
@@ -63,7 +63,7 @@
 <aside id="logo-sidebar"
     class="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full bg-gray-50 pt-6 transition-transform sm:translate-x-0"
     aria-label="Sidebar">
-    <div class="h-full overflow-y-auto px-3 py-4">
+    <div class="flex h-full flex-col overflow-y-auto px-3 py-4">
         <a href="/" class="mb-5 flex items-center ps-2.5">
             <img src="https://flowbite.com/docs/images/logo.svg" class="me-3 h-6 sm:h-7" alt="Flowbite Logo" />
             <span class="self-center whitespace-nowrap text-xl font-semibold">Arsip Laili</span>
@@ -101,6 +101,23 @@
                 </form>
             </li>
         </ul>
-
+        <div class="flex flex-1 items-end p-4">
+            @php
+                $initials = collect(explode(' ', auth()->user()->name))
+                    ->map(fn($word) => strtoupper($word[0]))
+                    ->take(2)
+                    ->implode('');
+            @endphp
+            <div class="flex items-center gap-2.5">
+                <div
+                    class="bg-neutral-tertiary relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full">
+                    <span class="text-body font-medium">{{ $initials }}</span>
+                </div>
+                <div class="text-heading font-medium">
+                    <div>{{ auth()->user()->name }}</div>
+                    <div c  lass="text-body text-sm font-normal">{{ auth()->user()->nip }}</div>
+                </div>
+            </div>
+        </div>
     </div>
 </aside>
