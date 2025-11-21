@@ -81,8 +81,8 @@ class UserController extends Controller
         Cache::flush();
 
         // 4. Redirect with success message
-        return redirect()->route('admin.users')->with([
-            'alert' => 'Pengguna **' . $user->name . '** berhasil ditambahkan!',
+        return redirect()->route('users.index')->with([
+            'alert' => 'Pengguna ' . $user->name . ' berhasil ditambahkan!',
             'type' => AlertEnum::SUCCESS->value
         ]);
     }
@@ -155,7 +155,7 @@ class UserController extends Controller
         Cache::flush();
 
         // 5. Redirect with success message
-        return redirect()->route('admin.users')->with([
+        return redirect()->route('users.index')->with([
             'alert' => 'Pengguna **' . $user->name . '** berhasil diperbarui!',
             'type' => AlertEnum::SUCCESS->value
         ]);
@@ -172,7 +172,7 @@ class UserController extends Controller
         // This is a common way to check, assuming your User model has an 'is_admin' column.
         // Adjust the condition based on how roles are managed in your application (e.g., $user->role === 'admin' or $user->hasRole('admin')).
         if ($user->role === 'admin') {
-            return redirect()->route('admin.users')->with([
+            return redirect()->route('users.index')->with([
                 'alert' => 'Pengguna dengan peran Admin tidak dapat dihapus.',
                 'type' => AlertEnum::DANGER->value // Assuming you have an ERROR type
             ]);
@@ -181,7 +181,7 @@ class UserController extends Controller
         $user->delete();
         Cache::flush();
 
-        return redirect()->route('admin.users')->with([
+        return redirect()->route('users.index')->with([
             'alert' => 'Pengguna berhasil dihapus!',
             'type' => AlertEnum::SUCCESS->value
         ]);

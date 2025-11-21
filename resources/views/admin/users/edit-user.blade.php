@@ -8,7 +8,7 @@
     <section class="max-w-4xl">
         {{-- Back Button --}}
         <div class="mb-4">
-            <a href="{{ route('admin.users') }}"
+            <a href="{{ route('users.index') }}"
                class="inline-flex items-center gap-2 rounded-lg bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-300">
                 <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4m-4-4 4-4"/>

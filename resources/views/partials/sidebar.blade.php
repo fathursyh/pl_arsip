@@ -9,26 +9,32 @@
                 'name' => 'Dashboard',
                 'link' => 'admin.home',
                 'icon' => 'home',
+                // Stays exact
+                'active' => 'admin.home',
             ],
             [
                 'name' => 'Arsip',
                 'link' => 'arsip.index',
                 'icon' => 'arsip',
+                'active' => 'arsip.*',
             ],
             [
                 'name' => 'Peminjaman',
                 'link' => 'peminjaman.index',
                 'icon' => 'pinjam',
+                'active' => 'peminjaman.*',
             ],
             [
                 'name' => 'Riwayat',
                 'link' => 'admin.riwayat',
                 'icon' => 'riwayat',
+                'active' => 'admin.riwayat*',
             ],
             [
                 'name' => 'Users',
-                'link' => 'admin.users',
+                'link' => 'users.index',
                 'icon' => 'users',
+                'active' => 'users.*',
             ],
         ],
         false => [
@@ -36,16 +42,19 @@
                 'name' => 'Dashboard',
                 'link' => 'user.home',
                 'icon' => 'home',
+                'active' => 'user.home',
             ],
             [
                 'name' => 'Arsip',
                 'link' => 'user.arsip',
                 'icon' => 'arsip',
+                'active' => 'user.arsip*',
             ],
             [
                 'name' => 'Peminjaman',
                 'link' => 'user.peminjaman',
                 'icon' => 'pinjam',
+                'active' => 'user.peminjaman*',
             ],
         ],
     };
@@ -70,7 +79,7 @@
         </a>
         <ul class="space-y-2 font-medium">
             @foreach ($SIDEBAR_MENU as $menu)
-                <li class="{{ request()->routeIs($menu['link']) ? 'bg-gray-200 rounded' : '' }}">
+                <li class="{{ request()->routeIs($menu['active']) ? 'bg-gray-200 rounded' : '' }}">
                     <a href="{{ route($menu['link']) }}"
                         class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100">
                         <x-sidebar-icons :icon="$menu['icon']" />
@@ -115,7 +124,7 @@
                 </div>
                 <div class="text-heading font-medium">
                     <div>{{ auth()->user()->name }}</div>
-                    <div c  lass="text-body text-sm font-normal">{{ auth()->user()->nip }}</div>
+                    <div c lass="text-body text-sm font-normal">{{ auth()->user()->nip }}</div>
                 </div>
             </div>
         </div>

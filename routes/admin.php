@@ -46,10 +46,6 @@ Route::middleware([
         Route::get('/riwayat', [PeminjamanController::class, 'history'])
             ->name('admin.riwayat');
 
-        Route::resource('/users', UserController::class)
-            ->names([
-                'index' => 'admin.users',
-            ]);
-
+        Route::resource('/users', UserController::class);
     });
 });
